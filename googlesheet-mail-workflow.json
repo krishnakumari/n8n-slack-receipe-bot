@@ -1,0 +1,158 @@
+{
+  "name": "googlesheet-mail-workflow",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "32d73b26-6c26-47fb-ba25-3466d25e65f8",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1sfEGpmGQVDbxOaGCliHDUrNNaros9UVhEy04n9EdFsI",
+          "mode": "list",
+          "cachedResultName": "n8n_email_automation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1sfEGpmGQVDbxOaGCliHDUrNNaros9UVhEy04n9EdFsI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Orders",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1sfEGpmGQVDbxOaGCliHDUrNNaros9UVhEy04n9EdFsI/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        224,
+        0
+      ],
+      "id": "a070df9a-4ee8-493a-9a40-2c214806c7e8",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "BeLrooonNybG91DF",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c18a7bc7-f0c4-4bca-add9-7df77b3dedcb",
+              "name": "recipient",
+              "value": "={{ $json.Email }}",
+              "type": "string"
+            },
+            {
+              "id": "bd67608b-e5b7-4282-a849-38a4d5f62ca2",
+              "name": "Subject",
+              "value": "={{ \"Order Confirmation - \" + $json.Product }}",
+              "type": "string"
+            },
+            {
+              "id": "c64daf22-3631-4721-8c51-e7a763ef620c",
+              "name": "body",
+              "value": "={{\n\"Hello \" + $json.Name + \",\\n\\n\" +\n\"Thank you for your order!\\n\\n\" +\n\"Here are your order details:\\n\" +\n\"Product: \" + $json.Product + \"\\n\" +\n\"Amount: ₹\" + $json.Amount + \"\\n\\n\" +\n\"Thank you for choosing us.\\n\\n\" +\n\"Best regards,\\nSales Team\"\n}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        448,
+        0
+      ],
+      "id": "1665bca5-2e3e-478a-b117-10ef1a1d618a",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.recipient }}",
+        "subject": "={{ $json.Subject }}",
+        "message": "={{ $json.body }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        672,
+        0
+      ],
+      "id": "f56e0190-a8c3-4381-b154-d2f777ffb013",
+      "name": "Send a message",
+      "webhookId": "566295ee-996f-462c-a0ba-c531af62d5e8",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "AnJXYtNDvSaKW72x",
+          "name": "raja.krishnakumari"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "09f456da-9726-45b5-8e66-b3c3e37c15a6",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "977346c14955d1efc642d16e422c610b6844d51cc4e8b5d98d2053b9f4286379"
+  },
+  "nodeGroups": [],
+  "id": "g72nobeuYZuKURks",
+  "tags": []
+}
